@@ -9,27 +9,17 @@
 // This shows the HTML page in "ui.html".
 figma.showUI(__html__);
 
-// Calls to "parent.postMessage" from within the HTML page will trigger this
-// callback. The callback will be passed the "pluginMessage" property of the
-// posted message.
-figma.ui.onmessage =  (msg: {type: string, count: number}) => {
-  // One way of distinguishing between different types of messages sent from
-  // your HTML page is to use an object with a "type" property like this.
-  if (msg.type === 'create-shapes') {
-    // This plugin creates slides and puts the user in grid view.
-    const numberOfSlides = msg.count;
+figma.ui.resize(500, 500);
 
-    const nodes: SlideNode[] = [];
-    for (let i = 0; i < numberOfSlides; i++) {
-      const slide = figma.createSlide();
-      nodes.push(slide);
-    }
-
-    figma.viewport.slidesView = 'grid';
-    figma.currentPage.selection = nodes;
+figma.ui.onmessage = async msg => {
+  if (msg.type === 'inject-code') {
+    // The layer name of the code block must be "Code block"
+    const codeBlock = figma.currentPage.findOne(node => node.name === "Code block") as CodeBlockNode;
+    
+    await figma.loadFontAsync({ family: "Source Code Pro", style: "Medium" }); 
+    codeBlock.code = msg.code;
+    
+    console.log(codeBlock);
+    figma.closePlugin();    
   }
-
-  // Make sure to close the plugin when you're done. Otherwise the plugin will
-  // keep running, which shows the cancel button at the bottom of the screen.
-  figma.closePlugin();
 };
