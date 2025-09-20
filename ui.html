@@ -1,10 +1,15 @@
-<h1>Type Your Code!</h1>
+<h1>Type Your Contents!</h1>
+<input id="title", type="text", placeholder="Enter the title">
 <textarea id="code" name="code" rows="50" cols="50" spellcheck="false"></textarea>
 <button id="create">Create</button>
 <script>
   document.getElementById('create').onclick = () => {
     const textbox = document.getElementById('code');
     const code = textbox.value;
-    parent.postMessage({ pluginMessage: { type: 'inject-code', code } }, '*');
+
+    const titleInput = document.getElementById('title');
+    const title = titleInput.value;
+
+    parent.postMessage({ pluginMessage: { type: 'inject-code', code, title } }, '*');
   }
 </script>
