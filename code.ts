@@ -13,13 +13,17 @@ figma.ui.resize(500, 500);
 
 figma.ui.onmessage = async msg => {
   if (msg.type === 'inject-code') {
-    // The layer name of the code block must be "Code block"
+    // The layer name for the components must be "Code block" and "Title"
     const codeBlock = figma.currentPage.findOne(node => node.name === "Code block") as CodeBlockNode;
+    const titleNode = figma.currentPage.findOne(node => node.name === "Title") as TextNode;
     
-    await figma.loadFontAsync({ family: "Source Code Pro", style: "Medium" }); 
+    await figma.loadFontAsync({ family: "Source Code Pro", style: "Medium" });
     codeBlock.code = msg.code;
     
+    await figma.loadFontAsync({ family: "Inter", style: "Bold" }); 
+    titleNode.characters = msg.title;
+    
     console.log(codeBlock);
-    figma.closePlugin();    
+    figma.closePlugin();
   }
 };
